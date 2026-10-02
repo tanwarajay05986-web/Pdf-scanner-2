@@ -1,0 +1,42 @@
+name: Build Attractive APK
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install PWA Builder
+        run: npm install -g @pwabuilder/cli
+
+      - name: Create App Manifest
+        run: |
+          echo '{
+            "name": "PDF Scanner Pro",
+            "short_name": "PDF Scanner",
+            "start_url": "./index.html",
+            "display": "standalone",
+            "background_color": "#ffffff",
+            "theme_color": "#667eea",
+            "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/337/337946.png", "sizes": "512x512", "type": "image/png" }]
+          }' > manifest.json
+
+      - name: Generate Android APK
+        run: pwabuilder package ./manifest.json --platforms android
+
+      - name: Upload APK to Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: PDF-Scanner-Pro-APK
+          path: pwabuilder-android-*.zip
