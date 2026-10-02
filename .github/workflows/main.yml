@@ -6,16 +6,17 @@ on:
 
 jobs:
   build-apk:
-    runs-on: ubuntu-latest
+    # यहाँ हमने नया सर्वर लगाया है ताकि Deprecated वाली एरर न आए
+    runs-on: ubuntu-24.04
     
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Install PWA Builder
         run: npm install -g @pwabuilder/cli
@@ -43,7 +44,8 @@ jobs:
         run: pwabuilder package ./manifest.json --platforms android --options '{"packageId":"com.tanwaraja.pdfscanner"}'
 
       - name: Upload APK to Artifacts
-        uses: actions/upload-artifact@v3
+        # यहाँ हमने v3 की जगह v4 लगा दिया है
+        uses: actions/upload-artifact@v4
         with:
           name: PDF-Scanner-Pro-APK
           path: pwabuilder-android-*.zip
