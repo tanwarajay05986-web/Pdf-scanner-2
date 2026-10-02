@@ -25,15 +25,22 @@ jobs:
           echo '{
             "name": "PDF Scanner Pro",
             "short_name": "PDF Scanner",
-            "start_url": "./index.html",
+            "start_url": "index.html",
             "display": "standalone",
             "background_color": "#ffffff",
             "theme_color": "#667eea",
-            "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/337/337946.png", "sizes": "512x512", "type": "image/png" }]
+            "icons": [
+              {
+                "src": "https://raw.githubusercontent.com/nicedoc/pwabuilder-cli/main/test/fixtures/manifest/icon-512.png",
+                "sizes": "512x512",
+                "type": "image/png",
+                "purpose": "any maskable"
+              }
+            ]
           }' > manifest.json
 
       - name: Generate Android APK
-        run: pwabuilder package ./manifest.json --platforms android
+        run: pwabuilder package ./manifest.json --platforms android --options '{"packageId":"com.tanwaraja.pdfscanner"}'
 
       - name: Upload APK to Artifacts
         uses: actions/upload-artifact@v3
