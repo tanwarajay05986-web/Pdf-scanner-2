@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PDF Scanner Pro</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <!-- PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>📄 PDF Scanner</h1>
+            <p>Scan documents instantly</p>
+        </header>
+
+        <div class="camera-box">
+            <video id="camera-feed" autoplay playsinline></video>
+            <img id="captured-image" alt="Captured Document">
+        </div>
+
+        <div class="controls">
+            <button id="start-camera" class="btn btn-primary">📷 Start Camera</button>
+            <button id="capture-btn" class="btn btn-success" disabled>📸 Capture</button>
+            <button id="download-btn" class="btn btn-danger" disabled>⬇️ Save PDF</button>
+        </div>
+    </div>
+
+    <canvas id="canvas" style="display:none;"></canvas>
+    <script src="script.js"></script>
+</body>
+</html>
