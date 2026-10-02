@@ -1,4 +1,4 @@
-name: Build Attractive APK
+name: Build PDF Scanner APK
 
 on:
   push:
@@ -6,46 +6,48 @@ on:
 
 jobs:
   build-apk:
-    # यहाँ हमने नया सर्वर लगाया है ताकि Deprecated वाली एरर न आए
     runs-on: ubuntu-24.04
     
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      # 2026 ke liye latest Node.js version use karein
+      - name: Set up Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
-      - name: Install PWA Builder
-        run: npm install -g @pwabuilder/cli
+      # Java (JDK 17) setup karein jo Android build ke liye zaroori hai
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-      - name: Create App Manifest
+      - name: Initialize NPM Project
+        run: npm init -y
+
+      - name: Install Capacitor Core & Android
+        run: npm install @capacitor/core @capacitor/cli @capacitor/android
+
+      - name: Configure Capacitor
+        run: npx cap init "PDF Scanner" "com.tanwaraja.pdfscanner" --web-dir .
+
+      - name: Add Android Platform
+        run: npx cap add android
+
+      - name: Sync Web Assets to Android
+        run: npx cap sync android
+
+      - name: Build Debug APK using Gradle Wrapper
         run: |
-          echo '{
-            "name": "PDF Scanner Pro",
-            "short_name": "PDF Scanner",
-            "start_url": "index.html",
-            "display": "standalone",
-            "background_color": "#ffffff",
-            "theme_color": "#667eea",
-            "icons": [
-              {
-                "src": "https://raw.githubusercontent.com/nicedoc/pwabuilder-cli/main/test/fixtures/manifest/icon-512.png",
-                "sizes": "512x512",
-                "type": "image/png",
-                "purpose": "any maskable"
-              }
-            ]
-          }' > manifest.json
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
-      - name: Generate Android APK
-        run: pwabuilder package ./manifest.json --platforms android --options '{"packageId":"com.tanwaraja.pdfscanner"}'
-
-      - name: Upload APK to Artifacts
-        # यहाँ हमने v3 की जगह v4 लगा दिया है
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PDF-Scanner-Pro-APK
-          path: pwabuilder-android-*.zip
+          name: My-PDF-Scanner-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
